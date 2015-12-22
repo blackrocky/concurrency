@@ -118,7 +118,7 @@ public class Ping {
                     result = new Result(url, "code " + code);
                 }
             } catch (Exception e) {
-                result = new Result(url, "Red");
+                result = new Result(url, "->Red<-");
             }
             return result;
         }
