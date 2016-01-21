@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class Ping {
+public class ConcurrentPings {
     private static final int MYTHREADS = 30;
 
     public static void main(String args[]) throws Exception {
