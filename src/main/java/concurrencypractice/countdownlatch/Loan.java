@@ -32,9 +32,11 @@ public class Loan {
     static {
         final CountDownLatch cdl = new CountDownLatch(3);
         loan = new Loan(newArrayList(new CreditChecker(cdl), new IncomeChecker(cdl), new RaisedInterestRateChecker(cdl)), cdl);
+        logger.info("Created singleton Loan instance {}", loan);
     }
 
     public static Loan getInstance() {
+        logger.info("Returning existing singleton Loan instance {}", loan);
         return loan;
     }
 

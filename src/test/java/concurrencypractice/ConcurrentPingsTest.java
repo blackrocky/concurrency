@@ -33,8 +33,8 @@ public class ConcurrentPingsTest {
         }
         runnablePool.shutdown();
         while (!runnablePool.isTerminated()) {
-
         }
+
         System.out.println("\nFinished all threads 1");
 
         final ExecutorService callablePool = Executors.newFixedThreadPool(MYTHREADS);
@@ -53,7 +53,6 @@ public class ConcurrentPingsTest {
         }
         callablePool.shutdown();
         while (!callablePool.isTerminated()) {
-
         }
 
         System.out.println("\nFinished all threads 2");
