@@ -4,25 +4,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Counter {
     private static final Logger logger = LoggerFactory.getLogger(Counter.class);
 
-    private int count;
+    private AtomicInteger atomicCount;
+    private int binarySemaphoreCount;
     private Semaphore binarySemaphore;
 
     public Counter() {
-        count = 0;
+        binarySemaphoreCount = 0;
+        atomicCount = new AtomicInteger(0);
         binarySemaphore = new Semaphore(1);
     }
 
-    public void countUp() {
+    public void countUpWithBinarySempahore() {
         try {
-            logger.info("count: {}", count);
             binarySemaphore.acquire();
+            logger.info("binarySemaphoreCount: {}", binarySemaphoreCount);
             Thread.sleep(2000);
-            count++;
-            logger.info("count added: {}", count);
+            binarySemaphoreCount++;
+            logger.info("binarySemaphoreCount added: {}", binarySemaphoreCount);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
@@ -30,20 +33,47 @@ public class Counter {
         }
     }
 
-    public int getCount() {
-        return count;
+    public void countUpWithAtomicCounter() {
+        try {
+            logger.info("atomicCount: {}", atomicCount.get());
+            Thread.sleep(2000);
+            atomicCount.getAndAdd(1);
+            logger.info("atomicCount added: {}", atomicCount.get());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
-    public static class MyRunnable implements Runnable {
+
+    public int getBinarySemaphoreCount() {
+        return binarySemaphoreCount;
+    }
+
+    public int getAtomicCount() { return atomicCount.get(); }
+
+    public static class MyBinarySemaphoreCounterRunnable implements Runnable {
         private final Counter counter;
 
-        public MyRunnable(final Counter counter) {
+        public MyBinarySemaphoreCounterRunnable(final Counter counter) {
             this.counter = counter;
         }
 
         @Override
         public void run() {
-            counter.countUp();
+            counter.countUpWithBinarySempahore();
+        }
+    }
+
+    public static class MyAtomicCounterRunnable implements Runnable {
+        private final Counter counter;
+
+        public MyAtomicCounterRunnable(final Counter counter) {
+            this.counter = counter;
+        }
+
+        @Override
+        public void run() {
+            counter.countUpWithAtomicCounter();
         }
     }
 }

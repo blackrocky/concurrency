@@ -14,22 +14,32 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
-import static java.util.Arrays.asList;
+import static com.google.common.collect.Lists.newArrayList;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 
 public class Loan {
     private static final Logger logger = LoggerFactory.getLogger(Loan.class);
 
-    public static boolean applyForLoan() throws Exception {
-        final CountDownLatch countDownLatch = new CountDownLatch(3);
+    private final List<AbstractChecker> checkers;
+    private final CountDownLatch countDownLatch;
+    private static final Loan loan;
 
-        final CreditChecker creditChecker = new CreditChecker(countDownLatch);
-        final IncomeChecker incomeChecker = new IncomeChecker(countDownLatch);
-        final RaisedInterestRateChecker raisedInterestRateChecker = new RaisedInterestRateChecker(countDownLatch);
+    private Loan(final List<AbstractChecker> checkers, final CountDownLatch countDownLatch) {
+        this.checkers = checkers;
+        this.countDownLatch = countDownLatch;
+    }
 
-        final List<AbstractChecker> checkers = asList(creditChecker, incomeChecker, raisedInterestRateChecker);
+    static {
+        final CountDownLatch cdl = new CountDownLatch(3);
+        loan = new Loan(newArrayList(new CreditChecker(cdl), new IncomeChecker(cdl), new RaisedInterestRateChecker(cdl)), cdl);
+    }
+
+    public static Loan getInstance() {
+        return loan;
+    }
+
+    public boolean apply() throws Exception {
         final ExecutorService executorService = newFixedThreadPool(checkers.size());
-
         boolean approved = true;
         final Set<Future<Boolean>> futures = new HashSet<>();
 
