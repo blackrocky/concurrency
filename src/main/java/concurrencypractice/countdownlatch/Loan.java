@@ -4,6 +4,8 @@ import concurrencypractice.countdownlatch.checkers.AbstractChecker;
 import concurrencypractice.countdownlatch.checkers.impl.CreditChecker;
 import concurrencypractice.countdownlatch.checkers.impl.IncomeChecker;
 import concurrencypractice.countdownlatch.checkers.impl.RaisedInterestRateChecker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.List;
@@ -16,7 +18,9 @@ import static java.util.Arrays.asList;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 
 public class Loan {
-    public static void main(String[] args) throws Exception {
+    private static final Logger logger = LoggerFactory.getLogger(Loan.class);
+
+    public static boolean applyForLoan() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(3);
 
         final CreditChecker creditChecker = new CreditChecker(countDownLatch);
@@ -49,8 +53,9 @@ public class Loan {
 
         countDownLatch.await();
 
-        System.out.println("Loan approved? " + approved);
-
+        logger.info("Loan approved? {}", approved);
         executorService.shutdown();
+
+        return approved;
     }
 }
