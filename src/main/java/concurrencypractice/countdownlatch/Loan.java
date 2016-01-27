@@ -7,7 +7,6 @@ import concurrencypractice.countdownlatch.checkers.impl.RaisedInterestRateChecke
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
@@ -15,6 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 import static com.google.common.collect.Lists.newArrayList;
+import static com.google.common.collect.Sets.newHashSet;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 
 public class Loan {
@@ -43,7 +43,7 @@ public class Loan {
     public boolean apply() throws Exception {
         final ExecutorService executorService = newFixedThreadPool(checkers.size());
         boolean approved = true;
-        final Set<Future<Boolean>> futures = new HashSet<>();
+        final Set<Future<Boolean>> futures = newHashSet();
 
         for (final AbstractChecker checker : checkers) {
             final Future<Boolean> submit = executorService.submit(checker);
