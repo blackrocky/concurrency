@@ -41,6 +41,10 @@ public class Auction {
         return auction;
     }
 
+    public CyclicBarrier getCyclicBarrier() {
+        return cyclicBarrier;
+    }
+
     public boolean startAuction() throws ExecutionException, InterruptedException, BrokenBarrierException {
         final ExecutorService executorService = newFixedThreadPool(bidders.size());
         logger.info("Parties {}", cyclicBarrier.getParties());
